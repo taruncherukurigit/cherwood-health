@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cherwood Corporation — Network Infrastructure Division</title>
+<meta name="description" content="Cherwood Health: a segmented enterprise network built on real Fortinet and Cisco hardware. Full build log, architecture, and troubleshooting record.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0B1220;
+    --panel: #121B2E;
+    --panel-raised: #17233A;
+    --line: #24314A;
+    --text: #E7ECF3;
+    --text-dim: #8C9AB5;
+    --text-faint: #566180;
+    --teal: #4FD1C5;
+    --teal-dim: rgba(79, 209, 197, 0.15);
+    --amber: #F0A94E;
+    --amber-dim: rgba(240, 169, 78, 0.12);
+    --red: #E8607A;
+    --green: #6FCF97;
+    --radius: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.6;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* subtle blueprint grid backdrop */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79, 209, 197, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79, 209, 197, 0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: #fff;
+  }
+
+  code, .mono {
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  a { color: var(--teal); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ============ NAV ============ */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(11, 18, 32, 0.88);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    color: #fff;
+  }
+  .brand-mark {
+    width: 26px; height: 26px;
+    border: 1.5px solid var(--teal);
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    color: var(--teal);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .brand-sub { color: var(--text-dim); font-weight: 400; font-size: 13px; margin-left: 4px; }
+  nav .links { display: flex; gap: 28px; font-size: 14px; }
+  nav .links a { color: var(--text-dim); }
+  nav .links a:hover { color: var(--teal); text-decoration: none; }
+
+  /* ============ HERO ============ */
+  header.hero {
+    padding: 76px 0 60px;
+    position: relative;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    background: var(--teal-dim);
+    border: 1px solid rgba(79, 209, 197, 0.3);
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+  }
+  .eyebrow .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--teal);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  h1.title {
+    font-size: 52px;
+    line-height: 1.08;
+    max-width: 780px;
+    margin-bottom: 20px;
+  }
+  h1.title span { color: var(--teal); }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--text-dim);
+    max-width: 620px;
+    margin-bottom: 36px;
+  }
+
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 56px; }
+  .btn {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 12px 22px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s ease;
+  }
+  .btn-primary {
+    background: var(--teal);
+    color: var(--ink);
+  }
+  .btn-primary:hover { background: #6ee0d5; text-decoration: none; }
+  .btn-ghost {
+    border: 1px solid var(--line);
+    color: var(--text);
+  }
+  .btn-ghost:hover { border-color: var(--teal); color: var(--teal); text-decoration: none; }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .stat {
+    background: var(--panel);
+    padding: 20px 22px;
+  }
+  .stat .num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: #fff;
+    display: block;
+  }
+  .stat .num .unit { font-size: 15px; color: var(--teal); font-weight: 500; }
+  .stat .label { font-size: 12.5px; color: var(--text-dim); margin-top: 4px; }
+
+  /* ============ TOPOLOGY (signature element) ============ */
+  section.topology { padding: 20px 0 80px; }
+  .topo-panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .topo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .topo-header h3 { font-size: 16px; }
+  .topo-legend {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    font-size: 12px; color: var(--text-dim); font-family: 'IBM Plex Mono', monospace;
+  }
+  .topo-legend span { display: flex; align-items: center; gap: 6px; }
+  .swatch { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+
+  svg.topo { width: 100%; height: auto; display: block; margin-top: 12px; }
+  .node-box { fill: var(--panel-raised); stroke: var(--line); stroke-width: 1.5; }
+  .node-label { fill: #fff; font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 500; }
+  .node-sub { fill: var(--text-dim); font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; }
+  .link { stroke: var(--line); stroke-width: 1.5; fill: none; }
+  .link-trusted { stroke: #4FD1C5; }
+  .link-guest { stroke: #F0A94E; }
+  .link-servers { stroke: #9C8CF0; }
+  .link-dmz { stroke: #E8607A; }
+  .link-branch { stroke: #6FCF97; }
+  .packet { r: 2.6; }
+
+  /* ============ SECTIONS GENERAL ============ */
+  section { padding: 60px 0; border-top: 1px solid var(--line); }
+  .section-head { max-width: 620px; margin-bottom: 40px; }
+  .section-head .eyebrow-plain {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 10px;
+    display: block;
+  }
+  .section-head h2 { font-size: 30px; margin-bottom: 12px; }
+  .section-head p { color: var(--text-dim); font-size: 15.5px; }
+
+  /* ============ CAPABILITY GRID ============ */
+  .cap-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .cap-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px;
+  }
+  .cap-card h4 { font-size: 15px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .cap-card h4 .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--teal);
+    background: var(--teal-dim);
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .cap-card p { font-size: 13.5px; color: var(--text-dim); }
+
+  /* ============ BUILD LOG ============ */
+  .log-item {
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    gap: 20px;
+    align-items: start;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .log-item:last-child { border-bottom: none; }
+  .log-part {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.05em;
+    padding-top: 3px;
+  }
+  .log-part strong { display: block; color: var(--teal); font-size: 14px; margin-bottom: 2px; }
+  .log-body h4 { font-size: 15.5px; margin-bottom: 6px; }
+  .log-body p { font-size: 13.5px; color: var(--text-dim); }
+  .log-body .why { font-size: 12.5px; color: var(--text-faint); margin-top: 6px; font-style: italic; }
+  .status {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    white-space: nowrap;
+    height: fit-content;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .status-done { background: rgba(111, 207, 151, 0.12); color: var(--green); border: 1px solid rgba(111,207,151,0.3); }
+
+  /* ============ BUG SPOTLIGHT ============ */
+  .bug-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .bug-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--amber);
+    border-radius: var(--radius);
+    padding: 22px;
+  }
+  .bug-card .bug-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .bug-card h4 { font-size: 15px; margin-bottom: 10px; }
+  .bug-card p { font-size: 13.5px; color: var(--text-dim); margin-bottom: 10px; }
+  .bug-card .fix { font-size: 13px; color: var(--text); }
+  .bug-card .fix strong { color: var(--green); }
+  .bug-card code {
+    background: rgba(0,0,0,0.3);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--teal);
+  }
+
+  /* ============ ARCHITECTURE TABLE ============ */
+  table.arch {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  table.arch th {
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-faint);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  table.arch td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    color: var(--text-dim);
+  }
+  table.arch td:first-child { color: #fff; font-weight: 500; }
+  table.arch td code { color: var(--teal); font-size: 12.5px; }
+  table.arch tr:last-child td { border-bottom: none; }
+
+  /* ============ STACK PILLS ============ */
+  .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    padding: 7px 13px;
+    border-radius: 100px;
+  }
+
+  /* ============ FOOTER / CTA ============ */
+  .cta-panel {
+    background: linear-gradient(135deg, var(--panel-raised), var(--panel));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 44px;
+    text-align: center;
+  }
+  .cta-panel h3 { font-size: 24px; margin-bottom: 10px; }
+  .cta-panel p { color: var(--text-dim); margin-bottom: 24px; max-width: 480px; margin-left: auto; margin-right: auto; }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 32px 0;
+    text-align: center;
+    color: var(--text-faint);
+    font-size: 12.5px;
+  }
+
+  @media (max-width: 860px) {
+    h1.title { font-size: 34px; }
+    .stat-row { grid-template-columns: repeat(2, 1fr); }
+    .cap-grid { grid-template-columns: 1fr; }
+    .bug-grid { grid-template-columns: 1fr; }
+    .log-item { grid-template-columns: 1fr; }
+    nav .links { display: none; }
+    table.arch { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">
+      <div class="brand-mark">CC</div>
+      Cherwood Corporation <span class="brand-sub">/ Network Infrastructure Division</span>
+    </div>
+    <div class="links">
+      <a href="#topology">Topology</a>
+      <a href="#capabilities">Capabilities</a>
+      <a href="#buildlog">Build Log</a>
+      <a href="#troubleshooting">Incidents</a>
+      <a href="#architecture">Architecture</a>
+      <a href="https://github.com/taruncherukurigit" target="_blank">GitHub ↗</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span> Division 01 — Cherwood Health — Live Build</span>
+    <h1 class="title">A segmented enterprise network, built on <span>real hardware</span>, tested against <span>real attacks</span>.</h1>
+    <p class="hero-sub">Cherwood Health is a fictional regional clinic group used as the operating scenario for a hands-on network engineering and security portfolio project — physical Fortinet and Cisco gear, no simulator, every bug documented as it actually happened.</p>
+    <div class="hero-actions">
+      <a href="#buildlog" class="btn btn-primary">View the build log →</a>
+      <a href="https://github.com/taruncherukurigit" target="_blank" class="btn btn-ghost">Full repo on GitHub</a>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><span class="num">4</span><span class="label">Segmented VLANs</span></div>
+      <div class="stat"><span class="num">2</span><span class="label">Sites (HQ + Branch, RIP-routed)</span></div>
+      <div class="stat"><span class="num">18<span class="unit">/21</span></span><span class="label">Build parts complete</span></div>
+      <div class="stat"><span class="num">0</span><span class="label">Inbound ports besides VPN</span></div>
+    </div>
+  </div>
+</header>
+
+<section class="topology" id="topology">
+  <div class="wrap">
+    <div class="topo-panel">
+      <div class="topo-header">
+        <h3>Live network topology</h3>
+        <div class="topo-legend">
+          <span><span class="swatch" style="background:#4FD1C5"></span>Trusted</span>
+          <span><span class="swatch" style="background:#F0A94E"></span>Guest</span>
+          <span><span class="swatch" style="background:#9C8CF0"></span>Servers</span>
+          <span><span class="swatch" style="background:#E8607A"></span>DMZ</span>
+          <span><span class="swatch" style="background:#6FCF97"></span>Branch</span>
+        </div>
+      </div>
+
+      <svg class="topo" viewBox="0 0 1040 480" xmlns="http://www.w3.org/2000/svg">
+        <!-- Internet node -->
+        <rect class="node-box" x="470" y="10" width="100" height="42" rx="6"/>
+        <text class="node-label" x="520" y="30" text-anchor="middle">Internet</text>
+        <text class="node-sub" x="520" y="43" text-anchor="middle">wan1</text>
+
+        <!-- FortiGate -->
+        <rect class="node-box" x="450" y="100" width="140" height="52" rx="6" stroke="#4FD1C5"/>
+        <text class="node-label" x="520" y="123" text-anchor="middle">FortiGate 60E</text>
+        <text class="node-sub" x="520" y="139" text-anchor="middle">10.10.x.1 / core</text>
+
+        <!-- link: internet to fortigate -->
+        <path class="link" d="M 520 52 L 520 100"/>
+        <circle class="packet" fill="#4FD1C5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M 520 52 L 520 100"/></circle>
+
+        <!-- 3560E switch -->
+        <rect class="node-box" x="450" y="205" width="140" height="48" rx="6"/>
+        <text class="node-label" x="520" y="226" text-anchor="middle">Cisco 3560E</text>
+        <text class="node-sub" x="520" y="241" text-anchor="middle">Trunk: 10,20,30,40</text>
+        <path class="link" d="M 520 152 L 520 205"/>
+        <circle class="packet" fill="#9C8CF0"><animateMotion dur="1.8s" repeatCount="indefinite" path="M 520 152 L 520 205"/></circle>
+
+        <!-- VLAN10 Trusted -->
+        <path class="link link-trusted" d="M 460 253 C 380 290, 260 290, 190 320"/>
+        <circle class="packet" fill="#4FD1C5"><animateMotion dur="2.1s" repeatCount="indefinite" path="M 460 253 C 380 290, 260 290, 190 320"/></circle>
+        <rect class="node-box" x="110" y="320" width="150" height="52" rx="6"/>
+        <text class="node-label" x="185" y="343" text-anchor="middle">VLAN10 · Trusted</text>
+        <text class="node-sub" x="185" y="359" text-anchor="middle">Staff AP · 10.10.10.0/24</text>
+
+        <!-- VLAN20 Guest -->
+        <path class="link link-guest" d="M 470 253 C 400 300, 330 305, 280 340"/>
+        <circle class="packet" fill="#F0A94E"><animateMotion dur="2.6s" repeatCount="indefinite" path="M 470 253 C 400 300, 330 305, 280 340"/></circle>
+        <rect class="node-box" x="200" y="400" width="150" height="52" rx="6"/>
+        <text class="node-label" x="275" y="423" text-anchor="middle">VLAN20 · Guest</text>
+        <text class="node-sub" x="275" y="439" text-anchor="middle">Portal + 10Mbps cap</text>
+        <path class="link link-guest" d="M 280 340 L 275 400"/>
+
+        <!-- VLAN30 Servers -->
+        <path class="link" stroke="#9C8CF0" d="M 520 253 L 520 320"/>
+        <circle class="packet" fill="#9C8CF0"><animateMotion dur="1.6s" repeatCount="indefinite" path="M 520 253 L 520 320"/></circle>
+        <rect class="node-box" x="445" y="320" width="150" height="52" rx="6" stroke="#9C8CF0"/>
+        <text class="node-label" x="520" y="343" text-anchor="middle">VLAN30 · Servers</text>
+        <text class="node-sub" x="520" y="359" text-anchor="middle">Proxmox · Prometheus · Grafana</text>
+
+        <!-- VLAN40 DMZ -->
+        <path class="link link-dmz" d="M 570 253 C 650 290, 730 290, 790 320"/>
+        <circle class="packet" fill="#E8607A"><animateMotion dur="1.9s" repeatCount="indefinite" path="M 570 253 C 650 290, 730 290, 790 320"/></circle>
+        <rect class="node-box" x="720" y="320" width="150" height="52" rx="6" stroke="#E8607A"/>
+        <text class="node-label" x="795" y="343" text-anchor="middle">VLAN40 · DMZ</text>
+        <text class="node-sub" x="795" y="359" text-anchor="middle">cherwood-dmz container</text>
+
+        <!-- DMZ to internet via tunnel -->
+        <path class="link link-dmz" d="M 870 335 C 950 260, 950 90, 590 118" stroke-dasharray="4 4"/>
+        <circle class="packet" fill="#E8607A"><animateMotion dur="3.2s" repeatCount="indefinite" path="M 870 335 C 950 260, 950 90, 590 118"/></circle>
+        <text class="node-sub" x="960" y="200" text-anchor="middle" transform="rotate(90 960 200)">Cloudflare Tunnel (outbound only)</text>
+
+        <!-- Branch link -->
+        <path class="link link-branch" d="M 590 126 C 720 150, 850 180, 900 210"/>
+        <circle class="packet" fill="#6FCF97"><animateMotion dur="2.3s" repeatCount="indefinite" path="M 590 126 C 720 150, 850 180, 900 210"/></circle>
+        <rect class="node-box" x="825" y="210" width="150" height="52" rx="6" stroke="#6FCF97"/>
+        <text class="node-label" x="900" y="233" text-anchor="middle">Cisco 1921 (Branch)</text>
+        <text class="node-sub" x="900" y="249" text-anchor="middle">RIPv2 · 10.10.99.0/30</text>
+
+        <path class="link link-branch" d="M 900 262 L 900 320"/>
+        <circle class="packet" fill="#6FCF97"><animateMotion dur="1.7s" repeatCount="indefinite" path="M 900 262 L 900 320"/></circle>
+        <rect class="node-box" x="825" y="320" width="150" height="52" rx="6"/>
+        <text class="node-label" x="900" y="343" text-anchor="middle">Branch LAN</text>
+        <text class="node-sub" x="900" y="359" text-anchor="middle">10.20.0.0/24 · internet-only</text>
+
+        <!-- SSL-VPN -->
+        <path class="link" stroke="#4FD1C5" stroke-dasharray="4 4" d="M 470 126 C 300 100, 150 130, 90 210"/>
+        <circle class="packet" fill="#4FD1C5"><animateMotion dur="2.8s" repeatCount="indefinite" path="M 470 126 C 300 100, 150 130, 90 210"/></circle>
+        <rect class="node-box" x="15" y="210" width="150" height="52" rx="6" stroke-dasharray="3 3"/>
+        <text class="node-label" x="90" y="233" text-anchor="middle">Remote Client</text>
+        <text class="node-sub" x="90" y="249" text-anchor="middle">SSL-VPN :10443</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="capabilities">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow-plain">What this proves</span>
+      <h2>Not just configured — monitored, automated, and attacked on purpose.</h2>
+      <p>Every layer below was built, then verified with real traffic, real logs, or a real deliberately-induced failure — not assumed to work because the config looked right.</p>
+    </div>
+    <div class="cap-grid">
+      <div class="cap-card">
+        <h4>Segmentation <span class="tag">4 VLANs</span></h4>
+        <p>Trusted, Guest, Servers, and DMZ — each with explicit, logged firewall policy, not just implicit default-deny. Guest→Trusted isolation proven with real log evidence.</p>
+      </div>
+      <div class="cap-card">
+        <h4>Remote access <span class="tag">SSL-VPN</span></h4>
+        <p>Non-default port, dynamic DNS via DuckDNS, tested end-to-end from real cellular data — including a 5-cause bug chain to get there.</p>
+      </div>
+      <div class="cap-card">
+        <h4>Site-to-site routing <span class="tag">RIPv2</span></h4>
+        <p>A physically separate branch office, dynamically routed back to HQ, isolated from internal VLANs by policy, internet-only.</p>
+      </div>
+      <div class="cap-card">
+        <h4>Monitoring <span class="tag">Prometheus + Grafana</span></h4>
+        <p>SNMP polling of every core device, live dashboards, host metrics — with a documented, honestly-labeled limitation on containerized memory accounting.</p>
+      </div>
+      <div class="cap-card">
+        <h4>Automation <span class="tag">Bash + cron</span></h4>
+        <p>Nightly diffing config backups on all three core devices, plus a config-drift isolation checker — validated by deliberately breaking a real policy and confirming it got caught.</p>
+      </div>
+      <div class="cap-card">
+        <h4>Detection <span class="tag">Packet capture</span></h4>
+        <p>A real reconnaissance simulation from the DMZ, confirmed blocked using a live FortiGate packet sniffer when standard log views came up empty.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="buildlog">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow-plain">Chronological record</span>
+      <h2>Build log</h2>
+      <p>Every part, in the order it was actually built. Full command-by-command detail lives in the repo's <a href="#">COMMAND-REFERENCE.md</a>.</p>
+    </div>
+
+    <div class="log-item">
+      <div class="log-part"><strong>PART 00</strong>Foundation</div>
+      <div class="log-body">
+        <h4>Domain, DNS & brand structure</h4>
+        <p><code>tarunc.com</code> registered, nameservers moved to Cloudflare. Cherwood Corporation established as a parent holding brand, with Cherwood Health as its first division — reusable for future homelab projects.</p>
+      </div>
+      <span class="status status-done">Done</span>
+    </div>
+
+    <div class="log-item">
+      <div class="log-part"><strong>PART 01–03</strong>Foundation</div>
+      <div class="log-body">
+        <h4>Physical wiring & FortiGate admin access</h4>
+        <p>FortiGate, switch, AP all cabled. Admin GUI secured, <code>internal1</code>/<code>internal2</code> split out of the default hardware switch to become independently configurable.</p>
+      </div>
+      <span class="status status-done">Done</span>
+    </div>
+
+    <div class="log-item">
+      <div class="log-part"><strong>PART 04–05</strong>Segmentation</div>
+      <div class="log-body">
+        <h4>VLANs on the firewall & switch</h4>
+        <p>VLAN 10/20/30 created on the FortiGate; matching VLANs and trunk ports configured on the 3560E. Diagnosed a native-VLAN mismatch and a "trunk allowed list ≠ VLAN database entry" gotcha along the way.</p>
+      </div>
+      <span class="status status-done">Done</span>
+    </div>
+
+    <div class="log-item">
+      <div class="log-part"><strong>PART 06</strong>Wireless</div>
+      <div class="log-body">
+        <h4>Dual-SSID wireless on Autonomous Cisco APs</h4>
+        <p>Staff and Guest SSIDs mapped to VLANs 10/20. Hit a hard vendor limit — one <code>guest-mode</code> slot per radio — and split the SSIDs across both radio bands to resolve it.</p>
+      </div>
+      <span class="status status-done">Done</span>
+    </div>
+
+    <div class="log-item">
+      <div class="log-part"><strong>PART 07–09</strong>Enforcement</div>
+      <div class="log-body">
+        <h4>Firewall policy, captive portal, full segmentation testing</h4>
+        <p>Explicit ACCEPT and DENY policies for every zone. Guest captive portal live. Isolation proven — not assumed — with a real blocked-traffic log entry before touching any production system.</p>
+      </div>
+      <span class="status status-done">Done</span>
+    </div>
+
+    <div class="log-item">
+      <div class="log-part"><strong>PART 10</strong>Production</div>
+      <div class="log-body">
+        <h4>Live migration + public DMZ site</h4>
+        <p>Production Proxmox host and its Kindle/RSS pipeline moved onto the segmented network. DMZ stood up serving <code>cherwood.tarunc.com</code> via Cloudflare Tunnel — zero open inbound ports for the public site.</p>
+      </div>
+      <span class="status status-done">Done</span>
+    </div>
+
+    <div class="log-item">
+      <div class="log-part"><strong>PART 11</strong>Remote Access</div>
+      <div class="log-body">
+        <h4>SSL-VPN, tested from real cellular data</h4>
+        <p>A five-cause bug chain — cipher self-conflict, a silently-unsaved port forward, a missing firewall policy, and a client-side VPN client conflict — before a clean connection from outside the network.</p>
+      </div>
+      <span class="status status-done">Done</span>
+    </div>
+
+    <div class="log-item">
+      <div class="log-part"><strong>PART 12–13</strong>Site-to-site</div>
+      <div class="log-body">
+        <h4>Branch office, routed over RIPv2</h4>
+        <p>A second physical site, dynamically routed back to HQ, isolated by policy the same way Guest is. Planned AP hardware turned out to be Lightweight firmware with unrecoverable credentials — documented and substituted honestly.</p>
+      </div>
+      <span class="status status-done">Done</span>
+    </div>
+
+    <div class="log-item">
+      <div class="log-part"><strong>PART 14</strong>Observability</div>
+      <div class="log-body">
+        <h4>Prometheus + Grafana monitoring</h4>
+        <p>SNMP polling of the firewall, switch, and branch router every 15 seconds. Live dashboards for interface throughput and host metrics.</p>
+      </div>
+      <span class="status status-done">Done</span>
+    </div>
+
+    <div class="log-item">
+      <div class="log-part"><strong>PART 15–16</strong>Automation</div>
+      <div class="log-body">
+        <h4>Config backups & drift detection</h4>
+        <p>Nightly SSH-based config pulls with diffing on all three core devices. A custom isolation-check script, validated by deliberately disabling a real firewall policy and confirming the script caught it.</p>
+      </div>
+      <span class="status status-done">Done</span>
+    </div>
+
+    <div class="log-item">
+      <div class="log-part"><strong>PART 17</strong>Validation</div>
+      <div class="log-body">
+        <h4>Simulated attack & detection</h4>
+        <p>A real reconnaissance attempt from the DMZ against the Trusted VLAN. Standard logs showed nothing — resolved with a live packet capture proving the traffic was actually being silently denied.</p>
+      </div>
+      <span class="status status-done">Done</span>
+    </div>
+
+    <div class="log-item">
+      <div class="log-part"><strong>PART 18</strong>Hardening</div>
+      <div class="log-body">
+        <h4>Guest bandwidth shaping</h4>
+        <p>A shared 10 Mbps cap on Guest traffic, deprioritized under contention, verified via CLI against the saved config.</p>
+      </div>
+      <span class="status status-done">Done</span>
+    </div>
+  </div>
+</section>
+
+<section id="troubleshooting">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow-plain">The real work</span>
+      <h2>A few incidents, in brief</h2>
+      <p>The full record — every bug, every root cause — lives in <a href="#">TROUBLESHOOTING-LOG.md</a>. Four representative ones below.</p>
+    </div>
+    <div class="bug-grid">
+      <div class="bug-card">
+        <span class="bug-tag">Part 11 · SSL-VPN</span>
+        <h4>A cipher list that banned its own requirements</h4>
+        <p>SSL-VPN failed with a generic "SSL exit error," visible in no abbreviated config view. <code>show full-configuration</code> revealed the firewall had banned SHA256/SHA384 while its own configured cipher suite required them — zero valid ciphers left to negotiate.</p>
+        <p class="fix"><strong>Fix:</strong> selectively un-banned the two hashes actually needed, leaving the genuinely weak SHA1 excluded.</p>
+      </div>
+      <div class="bug-card">
+        <span class="bug-tag">Part 11 · Client-side</span>
+        <h4>The firewall wasn't the problem — a VPN client was</h4>
+        <p>After every server-side fix, connections still failed. The actual dominant cause: Tailscale running on the test phone, competing with FortiClient for the device's own VPN routing.</p>
+        <p class="fix"><strong>Fix:</strong> disabled the competing client. Immediate, clean connection.</p>
+      </div>
+      <div class="bug-card">
+        <span class="bug-tag">Part 15/16 · Automation</span>
+        <h4>A drift-detection script that couldn't detect drift</h4>
+        <p>The isolation-checker passed every test — until deliberately validated against a real, intentionally-disabled policy. It missed it. The field that mattered was written <em>before</em> the anchor point the script searched from.</p>
+        <p class="fix"><strong>Fix:</strong> rewrote to parse whole policy blocks, re-tested against the same real fault, confirmed caught.</p>
+      </div>
+      <div class="bug-card">
+        <span class="bug-tag">Part 17 · Detection</span>
+        <h4>Silence in the logs isn't proof of nothing happening</h4>
+        <p>A real port scan from DMZ into Trusted was clearly blocked — but produced zero entries in Forward Traffic, Local Traffic, or Security Events.</p>
+        <p class="fix"><strong>Fix:</strong> <code>diagnose sniffer packet</code> directly on the FortiGate CLI proved packets were arriving and being silently denied — a logging-category distinction the GUI never surfaces.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="architecture">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow-plain">Design reference</span>
+      <h2>Addressing scheme</h2>
+      <p>Full rationale for every design decision lives in <a href="#">ARCHITECTURE.md</a>, including an honest section on what would change for real production use.</p>
+    </div>
+    <table class="arch">
+      <tr><th>Segment</th><th>Subnet</th><th>Gateway</th><th>Purpose</th></tr>
+      <tr><td>VLAN 10 — Trusted</td><td><code>10.10.10.0/24</code></td><td><code>10.10.10.1</code></td><td>Staff devices, network admin access</td></tr>
+      <tr><td>VLAN 20 — Guest</td><td><code>10.10.20.0/24</code></td><td><code>10.10.20.1</code></td><td>Public WiFi — isolated, bandwidth-capped</td></tr>
+      <tr><td>VLAN 30 — Servers</td><td><code>10.10.30.0/24</code></td><td><code>10.10.30.1</code></td><td>Proxmox host, all internal service containers</td></tr>
+      <tr><td>VLAN 40 — DMZ</td><td><code>10.10.40.0/24</code></td><td><code>10.10.40.1</code></td><td>Public-facing services only, fully isolated</td></tr>
+      <tr><td>Branch transit link</td><td><code>10.10.99.0/30</code></td><td>FG: <code>.1</code> · 1921: <code>.2</code></td><td>Point-to-point HQ↔Branch routing</td></tr>
+      <tr><td>Branch LAN</td><td><code>10.20.0.0/24</code></td><td><code>10.20.0.1</code></td><td>Branch office local network, internet-only</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow-plain">Tooling</span>
+      <h2>The stack</h2>
+    </div>
+    <div class="pill-row">
+      <span class="pill">FortiGate 60E</span>
+      <span class="pill">Cisco Catalyst 3560E</span>
+      <span class="pill">Cisco 1921 ISR</span>
+      <span class="pill">Cisco Autonomous APs</span>
+      <span class="pill">Proxmox VE</span>
+      <span class="pill">Debian LXC</span>
+      <span class="pill">Prometheus</span>
+      <span class="pill">Grafana</span>
+      <span class="pill">SNMP Exporter</span>
+      <span class="pill">Node Exporter</span>
+      <span class="pill">Bash + cron</span>
+      <span class="pill">Cloudflare Tunnel</span>
+      <span class="pill">SSL-VPN / FortiClient</span>
+      <span class="pill">RIPv2</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="cta-panel">
+      <h3>Full documentation, every command, every bug.</h3>
+      <p>The complete repo includes a command-by-command reference, the full troubleshooting log, and an interview-ready walkthrough of every design decision.</p>
+      <div class="hero-actions" style="justify-content:center;">
+        <a href="https://github.com/taruncherukurigit" target="_blank" class="btn btn-primary">Open the GitHub repo →</a>
+        <a href="https://cherwood.tarunc.com" target="_blank" class="btn btn-ghost">View the live DMZ site</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Cherwood Corporation — Division 01: Cherwood Health. A fictional operating scenario for a real network engineering portfolio. Built by Tarun Cherukuri.
+  </div>
+</footer>
+
+</body>
+</html>

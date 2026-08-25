@@ -1,0 +1,156 @@
+! Cisco AIR-CAP3702I-A-K9 (HQ Access Point, Autonomous mode) — Real running-config, sanitized
+! Pulled directly from the device via console. Password hashes and WPA-PSK
+! keys (type 7 "encrypted" -- Cisco's weak, reversible obfuscation, not real
+! encryption) are redacted below; everything else is genuine, including the
+! actual dual-SSID/dual-radio split documented in the troubleshooting log.
+
+Building configuration...
+
+Current configuration : 3194 bytes
+!
+version 15.3
+no service pad
+no service timestamps debug uptime
+no service timestamps log uptime
+service password-encryption
+!
+hostname c3702i-AP
+!
+logging rate-limit console 9
+enable secret 5 <REDACTED_ENABLE_SECRET>
+!
+no aaa new-model
+no ip source-route
+no ip cef
+ip domain name cherwoodhq.local
+!
+dot11 pause-time 100
+dot11 syslog
+!
+dot11 ssid Cherwood-Guest
+   vlan 20
+   authentication open
+   authentication key-management wpa version 2
+   guest-mode
+   wpa-psk ascii 7 <REDACTED_TYPE7_PSK>
+!
+dot11 ssid Cherwood-Staff
+   vlan 10
+   authentication open
+   authentication key-management wpa version 2
+   guest-mode
+   wpa-psk ascii 7 <REDACTED_TYPE7_PSK>
+!
+dot11 ssid CiscoAP
+   authentication open
+   guest-mode
+!
+no ipv6 cef
+!
+username Cisco password 7 <REDACTED_TYPE7_PASSWORD>
+username admin privilege 15 secret 5 <REDACTED_SECRET_HASH>
+!
+lldp run
+bridge irb
+!
+interface Dot11Radio0
+ no ip address
+ encryption vlan 10 mode ciphers aes-ccm
+ encryption vlan 20 mode ciphers aes-ccm
+ ssid Cherwood-Staff
+ antenna gain 0
+ station-role root
+!
+interface Dot11Radio0.10
+ encapsulation dot1Q 10 native
+ no cdp enable
+ bridge-group 1
+ bridge-group 1 subscriber-loop-control
+ bridge-group 1 spanning-disabled
+ bridge-group 1 block-unknown-source
+ no bridge-group 1 source-learning
+ no bridge-group 1 unicast-flooding
+!
+interface Dot11Radio0.20
+ encapsulation dot1Q 20
+ no cdp enable
+ bridge-group 2
+ bridge-group 2 subscriber-loop-control
+ bridge-group 2 spanning-disabled
+ bridge-group 2 block-unknown-source
+ no bridge-group 2 source-learning
+ no bridge-group 2 unicast-flooding
+!
+interface Dot11Radio1
+ no ip address
+ encryption vlan 10 mode ciphers aes-ccm
+ encryption vlan 20 mode ciphers aes-ccm
+ ssid Cherwood-Guest
+ antenna gain 0
+ peakdetect
+ dfs band 3 block
+ channel dfs
+ station-role root
+!
+interface Dot11Radio1.10
+ encapsulation dot1Q 10 native
+ no cdp enable
+ bridge-group 1
+ bridge-group 1 subscriber-loop-control
+ bridge-group 1 spanning-disabled
+ bridge-group 1 block-unknown-source
+ no bridge-group 1 source-learning
+ no bridge-group 1 unicast-flooding
+!
+interface Dot11Radio1.20
+ encapsulation dot1Q 20
+ no cdp enable
+ bridge-group 2
+ bridge-group 2 subscriber-loop-control
+ bridge-group 2 spanning-disabled
+ bridge-group 2 block-unknown-source
+ no bridge-group 2 source-learning
+ no bridge-group 2 unicast-flooding
+!
+interface GigabitEthernet0
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0.10
+ encapsulation dot1Q 10 native
+ no cdp enable
+ bridge-group 1
+ bridge-group 1 spanning-disabled
+ no bridge-group 1 source-learning
+!
+interface GigabitEthernet0.20
+ encapsulation dot1Q 20
+ no cdp enable
+ bridge-group 2
+ bridge-group 2 spanning-disabled
+ no bridge-group 2 source-learning
+!
+interface BVI1
+ mac-address <REDACTED_MAC>
+ ip address dhcp
+ ipv6 address dhcp
+ ipv6 address autoconfig
+ ipv6 enable
+!
+ip forward-protocol nd
+no ip http server
+ip http authentication local
+no ip http secure-server
+ip ssh version 2
+!
+no cdp run
+!
+bridge 1 route ip
+!
+line con 0
+line vty 0 4
+ login local
+ transport input ssh
+!
+end

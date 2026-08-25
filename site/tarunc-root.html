@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tarun Cherukuri — Network Engineer</title>
+<meta name="description" content="Tarun Cherukuri — Network Engineer, M.Eng Cybersecurity (University of Maryland). Enterprise infrastructure, wireless, security architecture. CCNA in progress.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0B1220; --panel: #121B2E; --panel-raised: #17233A; --line: #24314A;
+    --text: #E7ECF3; --text-dim: #8C9AB5; --text-faint: #566180;
+    --teal: #4FD1C5; --teal-dim: rgba(79, 209, 197, 0.15);
+    --amber: #F0A94E; --green: #6FCF97; --purple: #9C8CF0;
+    --radius: 10px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--ink); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; line-height: 1.6; font-size: 16px; -webkit-font-smoothing: antialiased; }
+  body::before { content:''; position: fixed; inset: 0; background-image: linear-gradient(rgba(79,209,197,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(79,209,197,0.035) 1px, transparent 1px); background-size: 48px 48px; pointer-events: none; z-index: 0; }
+  h1,h2,h3,h4 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; letter-spacing: -0.01em; color: #fff; }
+  code, .mono { font-family: 'IBM Plex Mono', monospace; }
+  a { color: var(--teal); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(11,18,32,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; padding: 14px 32px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15.5px; color: #fff; }
+  .brand-mark { width: 26px; height: 26px; border: 1.5px solid var(--teal); border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--teal); font-weight: 700; flex-shrink: 0; }
+  nav .links { display: flex; gap: 22px; font-size: 13.5px; align-items: center; }
+  nav .links a { color: var(--text-dim); }
+  nav .links a:hover { color: var(--teal); text-decoration: none; }
+  .nav-cta { background: var(--teal); color: var(--ink) !important; padding: 8px 16px; border-radius: 7px; font-weight: 500; }
+  .nav-cta:hover { background: #6ee0d5 !important; }
+
+  header.hero { padding: 76px 0 56px; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal); background: var(--teal-dim); border: 1px solid rgba(79,209,197,0.3); padding: 5px 12px; border-radius: 100px; margin-bottom: 24px; }
+  .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  h1.title { font-size: 48px; line-height: 1.08; margin-bottom: 16px; }
+  h1.title .role { color: var(--teal); }
+  .hero-sub { font-size: 17px; color: var(--text-dim); max-width: 680px; margin-bottom: 28px; }
+  .role-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 34px; }
+  .role-tag { font-family: 'IBM Plex Mono', monospace; font-size: 12px; border: 1px solid var(--line); color: var(--text-dim); padding: 6px 13px; border-radius: 100px; }
+
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 44px; }
+  .btn { font-family: 'IBM Plex Sans', sans-serif; font-weight: 500; font-size: 14px; padding: 12px 22px; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.15s ease; }
+  .btn-primary { background: var(--teal); color: var(--ink); }
+  .btn-primary:hover { background: #6ee0d5; text-decoration: none; }
+  .btn-ghost { border: 1px solid var(--line); color: var(--text); }
+  .btn-ghost:hover { border-color: var(--teal); color: var(--teal); text-decoration: none; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .stat { background: var(--panel); padding: 18px 20px; }
+  .stat .num { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; color: #fff; display: block; }
+  .stat .label { font-size: 11.5px; color: var(--text-dim); margin-top: 3px; }
+
+  section { padding: 56px 0; border-top: 1px solid var(--line); }
+  .section-head { max-width: 640px; margin-bottom: 34px; }
+  .eyebrow-plain { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 10px; display: block; }
+  .section-head h2 { font-size: 28px; margin-bottom: 10px; }
+  .section-head p { color: var(--text-dim); font-size: 15px; }
+
+  .exp-item { display: grid; grid-template-columns: 200px 1fr; gap: 24px; padding: 24px 0; border-bottom: 1px solid var(--line); }
+  .exp-item:last-child { border-bottom: none; }
+  .exp-when { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-faint); padding-top: 3px; }
+  .exp-body h4 { font-size: 16px; margin-bottom: 2px; }
+  .exp-body .org { font-size: 13.5px; color: var(--teal); margin-bottom: 10px; display: block; }
+  .exp-body ul { padding-left: 18px; color: var(--text-dim); font-size: 13.5px; }
+  .exp-body li { margin-bottom: 6px; }
+
+  .ed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .ed-card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+  .ed-card h4 { font-size: 15px; margin-bottom: 4px; }
+  .ed-card .org { font-size: 13px; color: var(--teal); margin-bottom: 6px; display: block; }
+  .ed-card .meta { font-size: 12px; color: var(--text-faint); margin-bottom: 10px; }
+  .ed-card p { font-size: 12.5px; color: var(--text-dim); }
+
+  .cert-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .cert-card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 20px; display: flex; align-items: center; gap: 14px; flex: 1; min-width: 210px; }
+  .cert-icon { width: 38px; height: 38px; border-radius: 8px; background: var(--teal-dim); border: 1px solid rgba(79,209,197,0.3); display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 11px; color: var(--teal); flex-shrink: 0; text-align: center; line-height: 1.1; }
+  .cert-card h4 { font-size: 13.5px; margin-bottom: 2px; }
+  .cert-card p { font-size: 11.5px; color: var(--text-dim); }
+
+  .patent-panel { background: linear-gradient(135deg, var(--panel-raised), var(--panel)); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; margin-top: 16px; display: flex; gap: 18px; align-items: flex-start; }
+  .patent-icon { width: 42px; height: 42px; border-radius: 8px; background: rgba(240,169,78,0.12); border: 1px solid rgba(240,169,78,0.3); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .patent-panel h4 { font-size: 15px; margin-bottom: 4px; }
+  .patent-panel p { font-size: 13px; color: var(--text-dim); }
+
+  .skill-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+  .skill-card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+  .skill-card h4 { font-size: 14.5px; margin-bottom: 12px; }
+  .skill-card ul { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+  .skill-card li { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--text-dim); background: var(--panel-raised); padding: 5px 9px; border-radius: 5px; }
+
+  .featured { background: linear-gradient(135deg, var(--panel-raised), var(--panel)); border: 1px solid var(--line); border-radius: var(--radius); padding: 36px; margin-bottom: 20px; }
+  .tag-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .mini-tag { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; background: var(--teal-dim); color: var(--teal); padding: 3px 9px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .featured h3 { font-size: 24px; margin-bottom: 10px; }
+  .featured > p { color: var(--text-dim); font-size: 14px; margin-bottom: 20px; max-width: 700px; }
+
+  .inv-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+  .inv-table th { text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-faint); padding: 8px 14px; border-bottom: 1px solid var(--line); }
+  .inv-table td { padding: 11px 14px; border-bottom: 1px solid var(--line); color: var(--text-dim); }
+  .inv-table td:first-child { color: #fff; font-weight: 500; }
+  .inv-table code { color: var(--teal); font-size: 12px; }
+  .inv-table tr:last-child td { border-bottom: none; }
+  .inv-cat { font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--purple); margin: 22px 0 6px; }
+  .inv-cat:first-child { margin-top: 4px; }
+
+  .proj-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
+  .proj-card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+  .proj-card.upcoming { border-style: dashed; opacity: 0.7; }
+  .proj-status { font-family: 'IBM Plex Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; padding: 3px 9px; border-radius: 100px; display: inline-block; margin-bottom: 12px; }
+  .proj-status.live { background: rgba(111,207,151,0.12); color: var(--green); border: 1px solid rgba(111,207,151,0.3); }
+  .proj-status.planned { background: rgba(140,154,181,0.12); color: var(--text-dim); border: 1px solid var(--line); }
+  .proj-card h4 { font-size: 15.5px; margin-bottom: 8px; }
+  .proj-card p { font-size: 13px; color: var(--text-dim); margin-bottom: 12px; }
+  .proj-link { font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+
+  .contact-panel { background: linear-gradient(135deg, var(--panel-raised), var(--panel)); border: 1px solid var(--line); border-radius: var(--radius); padding: 44px; text-align: center; }
+  .contact-panel h3 { font-size: 24px; margin-bottom: 10px; }
+  .contact-panel p { color: var(--text-dim); margin-bottom: 24px; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .contact-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  footer { border-top: 1px solid var(--line); padding: 28px 0; text-align: center; color: var(--text-faint); font-size: 12px; }
+
+  @media (max-width: 860px) {
+    h1.title { font-size: 32px; }
+    .stat-row { grid-template-columns: repeat(2,1fr); }
+    .skill-grid, .proj-grid, .ed-grid { grid-template-columns: 1fr; }
+    .exp-item { grid-template-columns: 1fr; gap: 6px; }
+    nav .links { display: none; }
+    .inv-table { font-size: 11.5px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><div class="brand-mark">TC</div> Tarun Cherukuri</div>
+    <div class="links">
+      <a href="#experience">Experience</a>
+      <a href="#professional-projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#cherwood">Cherwood Health</a>
+      <a href="#certs">Certifications</a>
+      <a href="https://github.com/taruncherukurigit" target="_blank">GitHub &#8599;</a>
+      <a href="mailto:taruncheru@gmail.com" class="nav-cta">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span> Open to opportunities</span>
+    <h1 class="title">Tarun Cherukuri<br><span class="role">Network Engineer.</span></h1>
+    <p class="hero-sub">M.Eng in Cybersecurity from the University of Maryland (3.9 GPA), with hands-on experience supporting enterprise infrastructure for 120+ users on Cisco, Palo Alto, and Meraki equipment — plus a fully independent, real-hardware lab project built from the ground up. CCNA in progress.</p>
+    <div class="role-tags">
+      <span class="role-tag">Network Engineer</span>
+      <span class="role-tag">Network Analyst</span>
+      <span class="role-tag">Network Architect</span>
+      <span class="role-tag">Wireless Engineer</span>
+    </div>
+    <div class="hero-actions">
+      <a href="#cherwood" class="btn btn-primary">View my hands-on lab project &#8594;</a>
+      <a href="mailto:taruncheru@gmail.com" class="btn btn-ghost">taruncheru@gmail.com</a>
+      <a href="tel:+12408864476" class="btn btn-ghost">(240) 886-4476</a>
+      <a href="https://www.linkedin.com/in/dsstaruncherukuri" target="_blank" class="btn btn-ghost">LinkedIn &#8599;</a>
+      <a href="https://github.com/taruncherukurigit" target="_blank" class="btn btn-ghost">GitHub &#8599;</a>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><span class="num">2.8 yrs</span><span class="label">Hands-on infrastructure experience</span></div>
+      <div class="stat"><span class="num">3.9</span><span class="label">GPA, M.Eng Cybersecurity</span></div>
+      <div class="stat"><span class="num">120+</span><span class="label">Users supported (UMD network)</span></div>
+      <div class="stat"><span class="num">1</span><span class="label">Published patent (SAFE MFA device)</span></div>
+    </div>
+  </div>
+</header>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow-plain">Professional background</span>
+      <h2>Experience</h2>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-when">Jul 2025 &ndash; May 2026</div>
+      <div class="exp-body">
+        <h4>Network Engineer &mdash; Graduate Assistantship</h4>
+        <span class="org">University of Maryland, College Park, MD</span>
+        <ul>
+          <li>Supported design, documentation, and maintenance of network infrastructure serving 120+ users across multiple locations on enterprise-grade Cisco, Palo Alto, and Meraki equipment</li>
+          <li>Provided hands-on troubleshooting for connectivity and performance issues using Wireshark packet analysis and SolarWinds monitoring</li>
+          <li>Managed network projects including equipment upgrades and infrastructure improvements; researched enhancements for organizational-standards compliance</li>
+          <li>Performed scheduled maintenance and proactive optimization; participated in rotating on-call incident response</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-when">Aug 2024 &ndash; Jun 2025</div>
+      <div class="exp-body">
+        <h4>Graduate Teaching Assistant &mdash; Networked Infrastructure</h4>
+        <span class="org">University of Maryland, College Park, MD</span>
+        <ul>
+          <li>Supported network design and maintenance across 20+ environments; hands-on troubleshooting with Wireshark and monitoring tools</li>
+          <li>Assisted with network projects and system upgrades applying Cisco, Palo Alto, and Meraki knowledge in a client-facing capacity</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-when">Jun 2022 &ndash; Jun 2024</div>
+      <div class="exp-body">
+        <h4>Network Researcher</h4>
+        <span class="org">Geethanjali College of Engineering</span>
+        <ul>
+          <li>Supported network infrastructure design and maintenance; troubleshot connectivity and performance issues</li>
+          <li>Developed and published a patent for SAFE (Secure Access Fortification Enabler), a multi-factor authentication security device</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow-plain">Academic background</span>
+      <h2>Education</h2>
+    </div>
+    <div class="ed-grid">
+      <div class="ed-card">
+        <h4>Master of Engineering in Cybersecurity</h4>
+        <span class="org">University of Maryland</span>
+        <div class="meta">GPA 3.9/4.0 &middot; May 2026</div>
+        <p>Focus: Networks &amp; Protocols, Network Security, Security Tools &amp; Information Assurance, Penetration Testing</p>
+      </div>
+      <div class="ed-card">
+        <h4>Graduate Certificate in Cloud Engineering</h4>
+        <span class="org">University of Maryland</span>
+        <div class="meta">May 2026</div>
+        <p>Focus: Cloud Security, Cloud Computing, Linux System Administration, Virtualization &amp; Containerization</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="certs">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow-plain">Credentials</span>
+      <h2>Certifications &amp; patent</h2>
+    </div>
+    <div class="cert-row">
+      <div class="cert-card"><div class="cert-icon">N+</div><div><h4>CompTIA Network+</h4><p>Certified</p></div></div>
+      <div class="cert-card"><div class="cert-icon">S+</div><div><h4>CompTIA Security+</h4><p>Certified</p></div></div>
+      <div class="cert-card"><div class="cert-icon">AWS</div><div><h4>AWS Cloud Practitioner</h4><p>Certified</p></div></div>
+      <div class="cert-card"><div class="cert-icon">CCNA</div><div><h4>Cisco CCNA</h4><p>In progress</p></div></div>
+    </div>
+    <div class="patent-panel">
+      <div class="patent-icon">&#128196;</div>
+      <div>
+        <h4>Published Patent &mdash; SAFE (Secure Access Fortification Enabler)</h4>
+        <p>A multi-factor authentication security device, developed and published during network research work at Geethanjali College of Engineering.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow-plain">Applied professionally &amp; in the lab</span>
+      <h2>Technical skills</h2>
+    </div>
+    <div class="skill-grid">
+      <div class="skill-card">
+        <h4>Network Architecture &amp; Design</h4>
+        <ul><li>Enterprise topology design</li><li>Scalability &amp; HA planning</li><li>Segmentation &amp; boundary design</li><li>Compliance alignment</li></ul>
+      </div>
+      <div class="skill-card">
+        <h4>Routing &amp; Switching</h4>
+        <ul><li>OSPF</li><li>BGP</li><li>RIPv2</li><li>Static routing</li><li>VLANs &amp; 802.1Q trunking</li><li>Port security / NAC</li></ul>
+      </div>
+      <div class="skill-card">
+        <h4>Firewalls &amp; Security</h4>
+        <ul><li>Palo Alto</li><li>Fortinet FortiGate</li><li>Meraki</li><li>VPN (SSL-VPN)</li><li>NAT</li><li>DNS filtering</li></ul>
+      </div>
+      <div class="skill-card">
+        <h4>Monitoring &amp; Analysis</h4>
+        <ul><li>SolarWinds</li><li>Wireshark</li><li>Prometheus</li><li>Grafana</li><li>SNMP</li><li>NetFlow</li></ul>
+      </div>
+      <div class="skill-card">
+        <h4>Wireless</h4>
+        <ul><li>Site surveys &amp; RF analysis</li><li>Cisco Autonomous APs</li><li>Meraki wireless</li><li>Ubiquiti UniFi</li><li>Coverage optimization</li></ul>
+      </div>
+      <div class="skill-card">
+        <h4>Systems &amp; Automation</h4>
+        <ul><li>Proxmox VE</li><li>Linux (Debian)</li><li>Bash scripting</li><li>SSH key management</li><li>Cron automation</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="professional-projects">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow-plain">From the UMD assistantship</span>
+      <h2>Professional projects</h2>
+      <p>Applied work from the network engineering role at University of Maryland, spanning infrastructure design, monitoring, and wireless deployment.</p>
+    </div>
+    <div class="proj-grid">
+      <div class="proj-card" style="cursor:pointer" onclick="document.getElementById('cherwood').scrollIntoView({behavior:'smooth'})">
+        <span class="proj-status live">Live</span>
+        <h4>Cherwood Health</h4>
+        <p>Independent, hands-on build — a segmented enterprise network on real Fortinet and Cisco hardware, with SSL-VPN, RIP-routed branch office, Prometheus/Grafana monitoring, and automated config drift detection. Full details below.</p>
+        <span class="proj-link">See full breakdown &#8595;</span>
+      </div>
+      <div class="proj-card">
+        <span class="proj-status live">Delivered</span>
+        <h4>Enterprise Network Infrastructure & Architecture</h4>
+        <p>Designed and deployed network infrastructure using Cisco routers/switches, Palo Alto firewalls, and Meraki access points for 120+ users. Implemented segmentation and security zones; optimized performance with OSPF routing and QoS policies; used Wireshark to identify and resolve latency issues.</p>
+      </div>
+      <div class="proj-card">
+        <span class="proj-status live">Delivered</span>
+        <h4>AWS Cloud Foundations</h4>
+        <p>Applied AWS core services (EC2, VPC, S3, IAM) through coursework tied to the Graduate Certificate in Cloud Engineering, covering cloud networking, security, and Linux-based virtualization — grounding the AWS Cloud Practitioner certification in hands-on practice rather than exam prep alone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cherwood">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow-plain">Independent lab project</span>
+      <h2>Cherwood Health</h2>
+      <p>A segmented enterprise network for a fictional healthcare organization &mdash; designed, built, and hardened end-to-end on real, physical Fortinet and Cisco hardware. Full command reference and troubleshooting log in the <a href="https://github.com/taruncherukurigit" target="_blank">GitHub repo</a>.</p>
+    </div>
+
+    <div class="featured">
+      <div class="tag-row">
+        <span class="mini-tag">4 VLANs</span>
+        <span class="mini-tag">RIPv2 site-to-site</span>
+        <span class="mini-tag">SSL-VPN</span>
+        <span class="mini-tag">Prometheus + Grafana</span>
+        <span class="mini-tag">Bash automation</span>
+      </div>
+      <h3>Full hardware &amp; software inventory</h3>
+      <p>Every device, model number, and technology actually used in the build &mdash; not a simulated topology.</p>
+
+      <div class="inv-cat">Network hardware</div>
+      <table class="inv-table">
+        <tr><th>Device</th><th>Model</th><th>Role</th></tr>
+        <tr><td>Firewall / Core Router</td><td><code>FortiGate 60E</code> (FortiOS 7.4.11)</td><td>Perimeter firewall, inter-VLAN policy, SSL-VPN, RIP</td></tr>
+        <tr><td>Core Switch</td><td><code>Cisco Catalyst 3560E-24PD-S</code> (PoE)</td><td>VLAN trunking, 4-zone segmentation</td></tr>
+        <tr><td>Branch Router</td><td><code>Cisco 1921 ISR</code> (IOS 15.x)</td><td>Site-to-site routing, Branch LAN gateway</td></tr>
+        <tr><td>HQ Access Point</td><td><code>Cisco AIR-CAP3702I-A-K9</code> (Autonomous)</td><td>Dual-SSID wireless &mdash; Trusted / Guest</td></tr>
+        <tr><td>Spare AP</td><td><code>Cisco AIR-LAP1142N-A-K9</code></td><td>Backup / spare unit</td></tr>
+        <tr><td>Branch AP (attempted)</td><td><code>Cisco AIR-CAP3502I-A-K9</code></td><td>Diagnosed as Lightweight/CAPWAP firmware, unrecoverable secondhand credentials &mdash; documented, substituted</td></tr>
+        <tr><td>Branch WiFi (deployed)</td><td><code>TP-Link Archer AX21</code></td><td>Practical substitute for the Branch AP, per above</td></tr>
+        <tr><td>Homelab Host</td><td><code>Lenovo T14</code></td><td>Runs Proxmox VE &mdash; all monitoring &amp; automation containers</td></tr>
+      </table>
+
+      <div class="inv-cat">Software &amp; platform</div>
+      <table class="inv-table">
+        <tr><th>Layer</th><th>Technology</th></tr>
+        <tr><td>Virtualization</td><td><code>Proxmox VE</code>, Debian 12 LXC containers</td></tr>
+        <tr><td>Metrics collection</td><td><code>Prometheus v2.53.0</code></td></tr>
+        <tr><td>Dashboards</td><td><code>Grafana</code></td></tr>
+        <tr><td>SNMP polling</td><td><code>SNMP Exporter v0.26.0</code>, SNMPv2c</td></tr>
+        <tr><td>Host metrics</td><td><code>Node Exporter v1.8.2</code></td></tr>
+        <tr><td>Public site delivery</td><td><code>Cloudflare Tunnel</code> (cloudflared), nginx</td></tr>
+        <tr><td>Dynamic DNS</td><td>DuckDNS</td></tr>
+        <tr><td>Remote access</td><td>FortiGate SSL-VPN, FortiClient</td></tr>
+        <tr><td>Automation</td><td>Bash, cron, SSH (Ed25519 / RSA-2048)</td></tr>
+        <tr><td>Routing protocol</td><td>RIPv2</td></tr>
+      </table>
+
+      <div class="hero-actions" style="margin-top:24px; margin-bottom: 0;">
+        <a href="https://cherwood.tarunc.com" target="_blank" class="btn btn-primary">Live project site &#8594;</a>
+        <a href="https://github.com/taruncherukurigit" target="_blank" class="btn btn-ghost">Full GitHub repo</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="more-projects">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow-plain">What's next</span>
+      <h2>More in the pipeline</h2>
+    </div>
+    <div class="proj-grid">
+      <div class="proj-card">
+        <span class="proj-status live">Live</span>
+        <h4>Cherwood Health</h4>
+        <p>Full segmented enterprise network &mdash; see above.</p>
+        <a class="proj-link" href="https://cherwood.tarunc.com" target="_blank">cherwood.tarunc.com &#8594;</a>
+      </div>
+      <div class="proj-card upcoming">
+        <span class="proj-status planned">Planned</span>
+        <h4>Network Automation Toolkit</h4>
+        <p>Python + Netmiko/NAPALM &mdash; multi-vendor config auditing and compliance checking.</p>
+      </div>
+      <div class="proj-card upcoming">
+        <span class="proj-status planned">Planned</span>
+        <h4>IDS/IPS Lab</h4>
+        <p>Suricata on a mirrored switch port &mdash; real detection and alert triage practice.</p>
+      </div>
+      <div class="proj-card upcoming">
+        <span class="proj-status planned">Planned</span>
+        <h4>Wireless Site Survey</h4>
+        <p>RF heatmapping and AP placement planning for a real physical space.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="contact-panel">
+      <h3>Let's talk.</h3>
+      <p>Open to Network Engineer, Network Analyst, Network Architect, and Wireless Engineer roles.</p>
+      <div class="contact-row">
+        <a href="mailto:taruncheru@gmail.com" class="btn btn-primary">taruncheru@gmail.com</a>
+        <a href="tel:+12408864476" class="btn btn-ghost">(240) 886-4476</a>
+        <a href="https://www.linkedin.com/in/dsstaruncherukuri" target="_blank" class="btn btn-ghost">LinkedIn &#8599;</a>
+        <a href="https://github.com/taruncherukurigit" target="_blank" class="btn btn-ghost">GitHub &#8599;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">Tarun Cherukuri &mdash; Network Engineering Portfolio. Flagship project: Cherwood Health.</div>
+</footer>
+
+</body>
+</html>

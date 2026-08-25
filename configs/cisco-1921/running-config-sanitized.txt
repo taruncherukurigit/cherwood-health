@@ -1,0 +1,88 @@
+! Cisco 1921 (Branch Router) — Real running-config, sanitized
+! Pulled via the project's own backup-1921.sh automation (Part 15/16).
+! Password hash and SSH key hash redacted below; everything else is genuine.
+
+Building configuration...
+
+Current configuration : 1478 bytes
+!
+! Last configuration change at 17:35:22 UTC Mon Aug 24 2026
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname CherwoodBranch-1921
+!
+boot-start-marker
+boot-end-marker
+!
+no aaa new-model
+!
+ip cef
+!
+ip domain name cherwoodbranch.local
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+license udi pid CISCO1921/K9 sn <REDACTED_SERIAL>
+!
+username admin privilege 15 secret 4 <REDACTED_PASSWORD_HASH>
+!
+redundancy
+!
+ip ssh version 2
+ip ssh pubkey-chain
+  username admin
+   key-hash ssh-rsa <REDACTED_KEY_HASH>
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ description Link-to-HQ-FortiGate
+ ip address 10.10.99.2 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ description Link-to-Branch-LAN-TPLink
+ ip address 10.20.0.1 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface Serial0/0/0
+ no ip address
+ shutdown
+!
+router rip
+ version 2
+ network 10.0.0.0
+ no auto-summary
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+ip route 0.0.0.0 0.0.0.0 10.10.99.1
+!
+control-plane
+!
+line con 0
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ login local
+ transport input ssh
+!
+scheduler allocate 20000 1000
+!
+end
