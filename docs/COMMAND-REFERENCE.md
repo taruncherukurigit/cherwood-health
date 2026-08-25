@@ -161,23 +161,45 @@ exit
 
 **Configuring the FortiGate-facing trunk port** (carries all VLANs the FortiGate needs to route between):
 ```
-interface gigabitethernet0/1
+interface gigabitethernet0/3
+ switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport trunk allowed vlan 10,20,30
 exit
 ```
 **What each line does:**
+- `switchport trunk encapsulation dot1q` — this switch model supports more than one trunking encapsulation, so it must be told explicitly to use 802.1Q (the modern standard) rather than leaving it ambiguous
 - `switchport mode trunk` — puts this port into 802.1Q trunk mode, meaning it carries multiple VLANs' traffic simultaneously, each tagged with its VLAN ID
 - `switchport trunk allowed vlan 10,20,30` — explicitly restricts which VLANs are permitted across this trunk — a security-relevant default-deny practice; without this, a trunk port defaults to carrying *all* VLANs, which is broader than necessary
 
+*(Physical port note: this is Gi0/3 on the real hardware — an earlier draft of this document referenced Gi0/1 as a placeholder from initial planning, before the physical build settled on Gi0/3. Corrected here to match the actual pulled device config.)*
+
 **Configuring the AP-facing trunk port** (only needs the VLANs actual wireless clients use):
 ```
-interface gigabitethernet0/2
+interface gigabitethernet0/5
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 10
  switchport mode trunk
  switchport trunk allowed vlan 10,20
 exit
 ```
-**Why this port's allowed list is narrower than the FortiGate-facing one:** the AP only ever needs to carry Trusted and Guest wireless traffic — it has no legitimate reason to see Servers VLAN traffic at all, so it's excluded here. This is the same "only permit what's actually needed" principle later applied to firewall policy design.
+**Why this port's allowed list is narrower than the FortiGate-facing one:** the AP only ever needs to carry Trusted and Guest wireless traffic — it has no legitimate reason to see Servers VLAN traffic at all, so it's excluded here. This is the same "only permit what's actually needed" principle later applied to firewall policy design. The explicit `native vlan 10` here is what the next section's native-VLAN-mismatch bug was actually about.
+
+*(Physical port note: this is Gi0/5 on the real hardware — corrected from an earlier Gi0/2 placeholder, same reason as above.)*
+
+**Configuring the Proxmox-facing trunk port** (carries Servers and DMZ traffic to the single physical NIC on the T14 hypervisor, which then splits it internally to the correct VLAN-tagged container via its own VLAN-aware Linux bridge):
+```
+interface gigabitethernet0/6
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 30
+ switchport mode trunk
+ switchport trunk allowed vlan 30,40
+ spanning-tree portfast trunk
+exit
+```
+**What each line does, beyond what's already covered above:**
+- `switchport trunk allowed vlan 30,40` — this port only ever needs to reach the Proxmox host, which only ever hosts Servers (30) and DMZ (40) workloads — Trusted and Guest traffic have no reason to be here
+- `spanning-tree portfast trunk` — tells Spanning Tree to skip its normal listening/learning delay on this port and bring it up immediately. This is safe specifically because Proxmox is a single host, not another switch — there's no loop risk to protect against, and the multi-second STP delay would otherwise needlessly slow down every container reboot's network availability
 
 **Setting a switch management IP** (so the switch itself can be reached for administration, separate from any single VLAN's gateway):
 ```
@@ -411,11 +433,12 @@ Once IPs were confirmed working, they were pinned via DHCP reservation so they w
 ```
 enable
 configure terminal
-interface gigabitethernet0/1
+interface gigabitethernet0/3
  switchport trunk allowed vlan add 40
 exit
 write
 ```
+*(This is the same FortiGate-facing trunk configured in Part 5, Gi0/3 on the real hardware — corrected from an earlier Gi0/1 placeholder.)*
 
 **Creating a new, isolated LXC container on the T14** for the DMZ site specifically — deliberately kept separate from the existing production containers (`kindle-digest`, `knowledge-feed`), assigned to VLAN 40.
 
