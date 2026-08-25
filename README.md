@@ -8,7 +8,6 @@ This project documents the design, build, and hardening of a segmented enterpris
 > 🐛 Real troubleshooting log (every bug, every fix): [`docs/TROUBLESHOOTING-LOG.md`](docs/TROUBLESHOOTING-LOG.md)
 > 🚀 Deployment log (getting the sites live): [`docs/DEPLOYMENT-LOG.md`](docs/DEPLOYMENT-LOG.md)
 > 🏗️ Architecture & design rationale: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
-> 🎤 Interview prep — talk-track for every part: [`docs/INTERVIEW-PREP.md`](docs/INTERVIEW-PREP.md)
 > 🌐 Live project site: [cherwood.tarunc.com](https://cherwood.tarunc.com)
 > 💼 Personal portfolio: [tarunc.com](https://tarunc.com)
 > 📦 This repo: [github.com/taruncherukurigit/cherwood-health](https://github.com/taruncherukurigit/cherwood-health)
@@ -42,63 +41,63 @@ Most portfolio projects in this space are simulated (GNS3, Packet Tracer) or a s
 
 **Grafana dashboard** — live throughput monitoring for the FortiGate, Branch router, and core switch.
 
-![Grafana dashboard 1](screenshots/grafana-dashboard1.png)
-![Grafana dashboard 2](screenshots/grafana-dashboard2.png)
-![Grafana dashboard 3](screenshots/grafana-dashboard3.png)
+![Grafana dashboard 1](screenshots/grafana-dashboard-1.png)
+![Grafana dashboard 2](screenshots/grafana-dashboard-2.png)
+![Grafana dashboard 3](screenshots/grafana-dashboard-3.png)
 
 **FortiGate firewall policies** — the full segmentation policy set, every zone's access explicitly allowed or denied.
 
-![FortiGate policies 1](screenshots/fortigate1.png)
-![FortiGate policies 2](screenshots/fortigate2.png)
+![FortiGate policies 1](screenshots/fortigate-policies-1.png)
+![FortiGate policies 2](screenshots/fortigate-policies-2.png)
 
 **FortiGate live traffic evidence** — Forward Traffic log and interface list, proving the segmentation is enforced in real time, not just configured.
 
-![FortiGate forward traffic](screenshots/fortigateforwardtraffic.png)
-![FortiGate interfaces](screenshots/fortigateinterfaces.png)
+![FortiGate forward traffic](screenshots/fortigate-traffic-logs.png)
+![FortiGate interfaces](screenshots/fortigate-interfaces.png)
 
 **Core switch** — VLAN database and trunk status, confirming the real 802.1Q design.
 
-![Switch VLANs and trunk status](screenshots/switch.png)
+![Switch VLANs and trunk status](screenshots/switch-vlans-and-trunk.png)
 
 **Branch router (1921)** — RIP-learned routes and interface status, proving dynamic site-to-site routing actually works.
 
-![Branch router RIP routes and interfaces](screenshots/routeripinterfacebrief.png)
+![Branch router RIP routes and interfaces](screenshots/router-rip-and-interfaces.png)
 
 **HQ access point** — the dual-SSID, dual-radio wireless configuration.
 
-![Access point SSID configuration](screenshots/ap.png)
+![Access point SSID configuration](screenshots/ap-ssids.png)
 
 **Automation in action** — a real backup script run and the live cron schedule driving it nightly.
 
 ![Backup script output](screenshots/backup-script-output.png)
-![Cron schedule](screenshots/crontab.png)
+![Cron schedule](screenshots/cron-schedule.png)
 
 **Proxmox** — the container fleet and network configuration behind the whole stack.
 
-![Proxmox containers](screenshots/proxmoxcontainer.png)
-![Proxmox DMZ container network config](screenshots/dmzproxmox.png)
+![Proxmox network config](screenshots/proxmox-network-config.png)
+![Proxmox DMZ container network config](screenshots/proxmox-dmz-network.png)
 
 **Cherwood Corporation project site** — live at cherwood.tarunc.com.
 
-![Cherwood site live 1](screenshots/cherwood.tarunc.com.png)
-![Cherwood site live 2](screenshots/cherwood.tarunc.com2.png)
+![Cherwood site live 1](screenshots/cherwood-site-live-1.png)
+![Cherwood site live 2](screenshots/cherwood-site-live-2.png)
 
 **Personal portfolio site** — live at tarunc.com.
 
-![Portfolio site live 1](screenshots/tarunc.com.png)
-![Portfolio site live 2](screenshots/tarunc.com2.png)
+![Portfolio site live 1](screenshots/portfolio-site-live-1.png)
+![Portfolio site live 2](screenshots/portfolio-site-live-2.png)
 
 ## Physical build
 
 Real hardware, not simulated — the actual devices, cabling, and lab setup behind this project.
 
-![Physical build 1](screenshots/lab1.png)
-![Physical build 2](screenshots/lab2.png)
-![Physical build 3](screenshots/lab4.png)
-![Physical build 4](screenshots/lab5.png)
-![Physical build 5](screenshots/lab6.png)
-![Physical build 6](screenshots/lab8.png)
-![Physical build 7](screenshots/lab10.png)
+![Physical build - full setup 1](screenshots/hardware-full-setup-1.png)
+![Physical build - full setup 2](screenshots/hardware-full-setup-2.png)
+![Physical build - FortiGate](screenshots/hardware-fortigate.png)
+![Physical build - switch](screenshots/hardware-switch.png)
+![Physical build - Branch router](screenshots/hardware-1921-router.png)
+![Physical build - access point](screenshots/hardware-ap.png)
+![Physical build - cabling](screenshots/hardware-cabling.png)
 
 ## The hardware
 
@@ -127,8 +126,7 @@ cherwood-health/
 │   ├── ARCHITECTURE.md                ← network design, VLAN plan, IP scheme, diagrams
 │   ├── COMMAND-REFERENCE.md           ← every command used, explained
 │   ├── TROUBLESHOOTING-LOG.md         ← every real bug, root cause, and fix
-│   ├── DEPLOYMENT-LOG.md              ← the site-launch DNS filter incident, in full
-│   └── INTERVIEW-PREP.md              ← Q&A walkthrough for talking through this project
+│   └── DEPLOYMENT-LOG.md              ← the site-launch DNS filter incident, in full
 ├── configs/
 │   ├── fortigate/                     ← sanitized FortiGate config, real values verified
 │   ├── cisco-1921/                    ← sanitized Branch router config (real device pull)
@@ -144,7 +142,7 @@ cherwood-health/
 │   ├── index.html                     ← the Cherwood Corporation site, live at cherwood.tarunc.com
 │   └── tarunc-root.html               ← personal portfolio, live at tarunc.com
 └── screenshots/
-    └── (dashboard, firewall policies, live sites, physical hardware — see below)
+    └── (dashboard, firewall policies, live sites, physical hardware — see above)
 ```
 
 ## A note on scope and honesty
@@ -153,4 +151,4 @@ This is a lab environment — no real patients, no real compliance load, no real
 
 ---
 
-*Built by Tarun Cherukuri as a hands-on portfolio project alongside CCNA study. See [`docs/INTERVIEW-PREP.md`](docs/INTERVIEW-PREP.md) for a full walkthrough of the technical decisions and troubleshooting behind this build.*
+*Built by Tarun Cherukuri as a hands-on portfolio project alongside CCNA study.*
