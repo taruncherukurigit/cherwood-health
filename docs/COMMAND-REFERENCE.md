@@ -569,7 +569,7 @@ end
 mkdir -p ~/duckdns
 cat << 'EOF' > ~/duckdns/duck.sh
 #!/bin/bash
-echo url="https://www.duckdns.org/update?domains=tarunhomelab&token=[REDACTED]&ip=" | curl -k -o ~/duckdns/duck.log -K -
+echo url="https://www.duckdns.org/update?domains=[REDACTED]&token=[REDACTED]&ip=" | curl -k -o ~/duckdns/duck.log -K -
 EOF
 chmod 700 ~/duckdns/duck.sh
 ```
