@@ -1,15 +1,15 @@
-# Cherwood Health — Enterprise Network & Security Portfolio Project
+# Segmented Enterprise Network (Home Lab)
 
-**A fictional multi-site healthcare organization, built on real enterprise hardware — not simulated, not Packet Tracer, not a lab template.**
+**A segmented two-site enterprise network built on real FortiGate and Cisco hardware, not a simulator.**
 
-This project documents the design, build, and hardening of a segmented enterprise network for "Cherwood Health," a fictional regional clinic group with a headquarters site and a branch office. It was built end-to-end on physical Fortinet and Cisco hardware, with every design decision, bug, and fix documented honestly — including the ones that didn't go smoothly the first time.
+This project documents the design, build, and hardening of a segmented enterprise network modeled on a small organization with a headquarters site and a branch office. Device hostnames use the lab name "Cherwood." It was built end-to-end on physical Fortinet and Cisco hardware, with every design decision, bug, and fix documented honestly — including the ones that didn't go smoothly the first time.
 
 > 📄 Full command-by-command reference: [`docs/COMMAND-REFERENCE.md`](docs/COMMAND-REFERENCE.md)
 > 🐛 Real troubleshooting log (every bug, every fix): [`docs/TROUBLESHOOTING-LOG.md`](docs/TROUBLESHOOTING-LOG.md)
 > 🚀 Deployment log (getting the sites live): [`docs/DEPLOYMENT-LOG.md`](docs/DEPLOYMENT-LOG.md)
 > 🏗️ Architecture & design rationale: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
-> 🌐 Live project site: [cherwood.tarunc.com](https://cherwood.tarunc.com)
-> 💼 Personal portfolio: [tarunc.com](https://tarunc.com)
+> 🌐 Project site: [taruncherukurigit.github.io/cherwood-health](https://taruncherukurigit.github.io/cherwood-health/)
+> 💼 Portfolio: [taruncherukurigit.github.io/portfolio-page](https://taruncherukurigit.github.io/portfolio-page/)
 > 📦 This repo: [github.com/taruncherukurigit/cherwood-health](https://github.com/taruncherukurigit/cherwood-health)
 
 ---
@@ -34,7 +34,7 @@ Most portfolio projects in this space are simulated (GNS3, Packet Tracer) or a s
 | **Remote Access** | SSL-VPN over a non-default port, dynamic DNS (DuckDNS), tested from real cellular data |
 | **Monitoring** | Prometheus + Grafana + SNMP Exporter + Node Exporter — live dashboards for every network device |
 | **Automation** | Nightly config backups (with diffing) and automated firewall-policy isolation checks for all three core devices |
-| **Public Presence** | A real, internet-facing demo site (`cherwood.tarunc.com`) served through Cloudflare Tunnel from the DMZ, with zero open inbound ports |
+| **Public Presence** | An internet-facing demo site served through Cloudflare Tunnel from the DMZ, with zero open inbound ports (no longer hosted) |
 | **Security Validation** | A real, deliberate reconnaissance simulation from the DMZ against the Trusted VLAN, confirmed blocked via live packet capture on the firewall |
 
 ## Screenshots
@@ -77,12 +77,12 @@ Most portfolio projects in this space are simulated (GNS3, Packet Tracer) or a s
 ![Proxmox network config](screenshots/proxmox-network-config.png)
 ![Proxmox DMZ container network config](screenshots/proxmox-dmz-network.png)
 
-**Cherwood Corporation project site** — live at cherwood.tarunc.com.
+**Project site** — served from the DMZ container through Cloudflare Tunnel while the lab was hosted publicly.
 
 ![Cherwood site live 1](screenshots/cherwood-site-live-1.png)
 ![Cherwood site live 2](screenshots/cherwood-site-live-2.png)
 
-**Personal portfolio site** — live at tarunc.com.
+**Personal portfolio site** — now hosted on GitHub Pages at [taruncherukurigit.github.io/portfolio-page](https://taruncherukurigit.github.io/portfolio-page/).
 
 ![Portfolio site live 1](screenshots/portfolio-site-live-1.png)
 ![Portfolio site live 2](screenshots/portfolio-site-live-2.png)
@@ -139,8 +139,7 @@ cherwood-health/
 │   ├── backup-fortigate.sh
 │   └── isolation-check.sh
 ├── site/
-│   ├── index.html                     ← the Cherwood Corporation site, live at cherwood.tarunc.com
-│   └── tarunc-root.html               ← personal portfolio, live at tarunc.com
+│   └── index.html                     ← the project site (served by GitHub Pages)
 └── screenshots/
     └── (dashboard, firewall policies, live sites, physical hardware — see above)
 ```
