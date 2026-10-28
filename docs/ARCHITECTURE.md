@@ -46,7 +46,7 @@ Every segment in this network exists because a real organization would need it, 
                                   │
                         Cloudflare Tunnel (outbound only)
                                   │
-                       https://cherwood.tarunc.com
+                       https://github.com/taruncherukurigit/cherwood-health
                           (public internet)
 ```
 
@@ -98,7 +98,7 @@ Every segment in this network exists because a real organization would need it, 
 
 This network deliberately minimizes what's reachable from the raw internet. As of the current build, exactly two things are internet-facing:
 
-1. **`https://cherwood.tarunc.com`** — the public demo site, served via **Cloudflare Tunnel** from the DMZ container. Notably, this involves **zero open inbound ports** on the home router/firewall — the tunnel is an outbound-only connection initiated by the DMZ container to Cloudflare's edge, meaning there's nothing for an internet scanner to even find and probe directly.
+1. **`https://github.com/taruncherukurigit/cherwood-health`** — the public demo site, served via **Cloudflare Tunnel** from the DMZ container. Notably, this involves **zero open inbound ports** on the home router/firewall — the tunnel is an outbound-only connection initiated by the DMZ container to Cloudflare's edge, meaning there's nothing for an internet scanner to even find and probe directly.
 2. **SSL-VPN on port `10443`** — a single authenticated login gateway, forwarded from the ISP router directly to the FortiGate. This is the only genuinely open inbound port in the entire design.
 
 Everything else — the FortiGate admin panel, the Grafana dashboard, Proxmox's own web UI, every internal service — is reachable only from inside the network (or through the SSL-VPN, once authenticated).

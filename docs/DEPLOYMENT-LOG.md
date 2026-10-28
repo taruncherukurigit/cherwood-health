@@ -1,4 +1,6 @@
-# Deployment Log — Site Launch (tarunc.com + cherwood.tarunc.com)
+# Deployment Log — Site Launch (taruncherukurigit.github.io/portfolio-page + github.com/taruncherukurigit/cherwood-health)
+
+> **Update (Oct 2026):** the self-hosted sites described below have been retired. All projects are now served from GitHub Pages and linked from [taruncherukurigit.github.io/portfolio-page](https://taruncherukurigit.github.io/portfolio-page/). This log is kept as a record of the original deployment.
 
 **Status:** Both sites live. `tarunc.com` / `www.tarunc.com` serving the personal portfolio; `cherwood.tarunc.com` serving the upgraded Cherwood Corporation project site. Both hosted on the existing `cherwood-dmz` container, riding the existing Cloudflare Tunnel — zero new open inbound ports.
 
@@ -35,8 +37,8 @@
 
 | URL | Content |
 |---|---|
-| `https://tarunc.com` / `https://www.tarunc.com` | Personal portfolio — resume, skills, Cherwood Health project summary |
-| `https://cherwood.tarunc.com` | Cherwood Corporation — full project site with animated topology, build log, troubleshooting highlights |
+| `https://taruncherukurigit.github.io/portfolio-page/` / `https://taruncherukurigit.github.io/portfolio-page/` | Personal portfolio — resume, skills, Cherwood Health project summary |
+| `https://github.com/taruncherukurigit/cherwood-health` | Cherwood Corporation — full project site with animated topology, build log, troubleshooting highlights |
 
 ## Flagged for future work (not blockers)
 
